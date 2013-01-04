@@ -4,8 +4,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kthcorp.gw_scd_latlon_convert.GwscdMapper">
 	
-	<select id="selectGwscd" parameterType="map" resultType="map">
-		select id,docid,x,y from GW_SCD limit ${start},${end}
+	<select id="selectGwscd" parameterType="hashmap" resultType="hashmap">
+		select id,docid,x,y from GW_SCD_LATLON limit ${start},${end}
 	</select>
+	
+	<select id="selectGwscdTotalCount" resultType="int">
+		select count(*)cnt from GW_SCD_LATLON
+	</select>
+	
+	<update id="updateGWscd" parameterType="hashmap">
+		update GW_SCD_LATLON set l_x=${x},l_y=${y} where id=${id}
+	</update>
 	
 </mapper>
