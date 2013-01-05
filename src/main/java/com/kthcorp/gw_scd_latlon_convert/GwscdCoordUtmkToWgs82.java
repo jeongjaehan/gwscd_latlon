@@ -64,8 +64,8 @@ public class GwscdCoordUtmkToWgs82 {
 	
 	public void goTask(){
 		
-		int fetchCount = 100; // 1000만 건씩 DB에서 읽어오기
-		int start = 1;
+		int fetchCount = 100000; // 10만 건씩 DB에서 읽어오기
+		int start = 0;
 		int end = 0;
 		int total = 0;
 		
@@ -73,17 +73,19 @@ public class GwscdCoordUtmkToWgs82 {
 		GwscdMapper gwscdMapper = session.getMapper(GwscdMapper.class);
 		
 		total = gwscdMapper.selectGwscdTotalCount();
-//		total = 20000000;
+//		total = 96487;
 		log.info("total : "+total);
 		
 		while(true){
+			long startTime = System.currentTimeMillis();
+			
 			if(end >= total){
 				break;
 			}
 			
 			end+=fetchCount;
 			
-			if(end>total)
+			if(end>total) // 종료 카운트가 총카운트보다 클경우
 				end = total;
 			
 			log.info("start : "+start + ", end : "+end);
@@ -100,14 +102,13 @@ public class GwscdCoordUtmkToWgs82 {
 				String uY = hashMap.get("y").toString() ;
 				DPoint up = new DPoint(Double.parseDouble(uX),Double.parseDouble(uY));
 				
-				// 좌표 변환 utmk -> wgs84
+//				 좌표 변환 utmk -> wgs84
 				try {
 					DPoint wp = ConvCoord.convert(up, ConvCoord.UTMK, ConvCoord.LLW);
 //					log.info("좌표변환성공 -> X : "+wp.x+", Y : "+wp.y);
 					
 					HashMap<String,Object> iparams = new HashMap<String,Object>();
-					iparams.put("x", wp.x);
-					iparams.put("y", wp.y);
+					iparams.put("xy", wp.y+","+wp.x);
 					iparams.put("id", id);
 					
 					gwscdMapper.updateGWscd(iparams);	// 변환된 좌표 db 업데이트 
@@ -117,14 +118,15 @@ public class GwscdCoordUtmkToWgs82 {
 				}
 				
 			}
-			start+=fetchCount;
+			if(start==0)
+				start += fetchCount+1;
+			else
+				start += fetchCount;
+			
+			long endTime = System.currentTimeMillis();
+			log.info("compleate["+(endTime - startTime)+" ms]");
 		}
 		
-		
-		
-		
-		
-		// DB 업데이트 
 		
 		// 리소스 정리
 		session.commit();

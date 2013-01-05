@@ -13,7 +13,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	
 	<update id="updateGWscd" parameterType="hashmap">
-		update GW_SCD_LATLON set l_x=${x},l_y=${y} where id=${id}
+		update GW_SCD_LATLON set xy=#{xy} where id=${id}
 	</update>
 	
 </mapper>
