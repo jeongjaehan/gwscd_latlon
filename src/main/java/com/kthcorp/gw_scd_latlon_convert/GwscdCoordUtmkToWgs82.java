@@ -73,7 +73,7 @@ public class GwscdCoordUtmkToWgs82 {
 		GwscdMapper gwscdMapper = session.getMapper(GwscdMapper.class);
 		
 		total = gwscdMapper.selectGwscdTotalCount();
-//		total = 96487;
+//		total = 2554606;
 		log.info("total : "+total);
 		
 		while(true){
@@ -88,11 +88,11 @@ public class GwscdCoordUtmkToWgs82 {
 			if(end>total) // 종료 카운트가 총카운트보다 클경우
 				end = total;
 			
-			log.info("start : "+start + ", end : "+end);
+			log.info("start : "+start + ", end : "+end+", fetchCount : "+fetchCount);
 			
 			HashMap<String,Object> params = new HashMap<String,Object>();
 			params.put("start", start);
-			params.put("end", end);
+			params.put("end", fetchCount);
 			
 			List<HashMap> list = gwscdMapper.selectGwscd(params);
 			
@@ -118,6 +118,7 @@ public class GwscdCoordUtmkToWgs82 {
 				}
 				
 			}
+			
 			if(start==0)
 				start += fetchCount+1;
 			else
