@@ -119,10 +119,7 @@ public class GwscdCoordUtmkToWgs82 {
 				
 			}
 			
-			if(start==0)
-				start += fetchCount+1;
-			else
-				start += fetchCount;
+			start += fetchCount;
 			
 			long endTime = System.currentTimeMillis();
 			log.info("compleate["+(endTime - startTime)+" ms]");
